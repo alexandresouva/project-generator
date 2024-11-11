@@ -1,15 +1,22 @@
 {
   "name": "project-generator",
   "version": "0.0.0",
-  "description": "A blank schematics",
+  "description": "A generator for Angular projects.",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "npm run build && jasmine src/**/*_spec.js"
+    "test": "npm run build && jasmine src/**/*_spec.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "prettier": "prettier --check .",
+    "prettier:fix": "prettier . --write",
+    "format": "npm run prettier:fix && npm run lint:fix"
   },
   "keywords": [
-    "schematics"
+    "schematics",
+    "angular",
+    "template"
   ],
-  "author": "",
+  "author": "Alexandre Sousa Silva",
   "license": "MIT",
   "schematics": "./src/collection.json",
   "dependencies": {
@@ -18,8 +25,9 @@
     "typescript": "~5.5.2"
   },
   "devDependencies": {
-    "@types/node": "^18.18.0",
     "@types/jasmine": "~5.1.0",
-    "jasmine": "^5.0.0"
+    "@types/node": "^18.18.0",
+    "jasmine": "^5.0.0",
+    "prettier": "3.3.3"
   }
 }
