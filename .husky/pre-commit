@@ -1,0 +1,5 @@
+npm run lint && npm run prettier || { 
+  echo "🚫 Erros encontrados! Corrija-os antes de continuar o commit."
+  echo "" # insert a break line
+  exit 1
+}
