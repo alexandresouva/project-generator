@@ -11,7 +11,3 @@ export const LOG_PHASES = {
   success: '✅ Projeto atualizado com sucesso! \n',
   noChanges: 'Nenhuma mudança foi detectada. O seu projeto está atualizado!',
 };
-
-export const REQUIRED_DEPENDENCIES = {
-  rxjs: '^7.0.0',
-};

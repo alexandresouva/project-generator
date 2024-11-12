@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
 
 import { TemplateSchema, TemplateOptions } from './schema';
@@ -10,9 +9,18 @@ import {
   TEMPLATE_REQUIRED_IMPORTS,
 } from './schema-data';
 import { getAllImportsBasedOnCustomization } from '../../core/helpers/import-helper';
+import { preSchematic } from '../../schematics/pre-schematic';
 
 /**
- * Regra com a implementação final do template.
+ * Wrapper que contem regras a serem checadas antes
+ * da execução do template principal.
+ */
+export default function (options: TemplateSchema): Rule {
+  return preSchematic(example(options));
+}
+
+/**
+ * Regra com a implementação do template.
  *
  * @param {TemplateSchema} options - Representação do schema.
  * @returns {Rule} - Regra para aplicar o template ao projeto.

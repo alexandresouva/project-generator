@@ -1,9 +1,14 @@
 {
   "$schema": "../node_modules/@angular-devkit/schematics/collection-schema.json",
   "schematics": {
+    "preSchematic": {
+      "private": true,
+      "description": "Executa um comando npm dentro do projeto de destino.",
+      "factory": "../dist/schematics/npmRun"
+    },
     "example": {
       "description": "A schema example.",
-      "factory": "../dist/templates/example/index#example",
+      "factory": "../dist/templates/example/index",
       "schema": "./templates/example/schema.json"
     }
   }
