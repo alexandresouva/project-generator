@@ -3,20 +3,22 @@ import {
   noop,
   Rule,
   SchematicContext,
+  SchematicsException,
   Tree,
 } from '@angular-devkit/schematics';
 import {
   getAllProjectDependencies,
   getMissingRequiredDependencies,
 } from './dependency-helper';
+import { getPrefixFromAngularJson } from './utils';
+import { SchemaBase } from '../interfaces/Schema';
 
-export function createTemplateRule(): Rule {
+export function createTemplateRule(options: SchemaBase): Rule {
   const dependencies = getAllProjectDependencies();
   if (!dependencies) {
-    console.error(
+    throw new SchematicsException(
       '\n Ocorreu um erro ao listar as dependências do projeto. Para mais detalhes, consulte o log. \n'
     );
-    return noop();
   }
 
   // Interrompe a geração caso falte alguma dependência obrigatória
@@ -30,6 +32,8 @@ export function createTemplateRule(): Rule {
   }
 
   return (tree: Tree, context: SchematicContext) => {
+    options.teamAcronym = getPrefixFromAngularJson(tree);
+
     return chain([(_tree: Tree, _context: SchematicContext) => {}])(
       tree,
       context

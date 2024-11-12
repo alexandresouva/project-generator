@@ -60,6 +60,6 @@ export function example(_options: TemplateSchema): Rule {
 
     console.log(imports);
 
-    return createTemplateRule();
+    return createTemplateRule(_options);
   };
 }
