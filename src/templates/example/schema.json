@@ -18,7 +18,11 @@
     },
     "teamAcronym": {
       "type": "string",
-      "description": "Defina a sigla da equipe. Ex: GAW"
+      "description": "Defina a sigla da equipe. Ex: XYZ"
+    },
+    "dataViewMode": {
+      "type": "string",
+      "description": "Defina o modo de exibição dos dados principais"
     },
     "inlineStyle": {
       "description": "Specifies if the style will be in the ts file.",

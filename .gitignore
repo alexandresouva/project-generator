@@ -19,3 +19,6 @@ yarn-error.log*
 # Mac OSX Finder files.
 **/.DS_Store
 .DS_Store
+
+# Não ignorar o copy-files-js. Necessário para gerar arquivos.
+!src/core/helpers/copy-files.js

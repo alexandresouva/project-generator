@@ -52,13 +52,17 @@ export function example(_options: TemplateSchema): Rule {
       return answers;
     });
 
-    const imports = getAllImportsBasedOnCustomization(
+    // Atribui as preferências ao template no schema
+    _options = {
+      ..._options,
+      ...userPreferences,
+    };
+
+    getAllImportsBasedOnCustomization(
       userPreferences ?? defaultTemplatePreferences,
       TEMPLATE_REQUIRED_IMPORTS,
       TEMPLATE_CONDITIONAL_IMPORTS
     );
-
-    console.log(imports);
 
     return createTemplateRule(_options);
   };

@@ -1,0 +1,11 @@
+<% if (dataViewMode === 'pagination') { %>
+
+### Olá, um item foi paginado.
+
+<% } %>
+
+<% if (dataViewMode === 'infinite-scroll') { %>
+
+### Olá, este item tem scroll.
+
+<% } %>

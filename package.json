@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "A generator for Angular projects.",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json && node src/core/helpers/copy-files.js",
     "test": "npm run build && jasmine src/**/*_spec.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",

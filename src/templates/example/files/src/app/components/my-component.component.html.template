@@ -1,0 +1,13 @@
+<% if (dataViewMode === 'pagination') { %>
+<div class="pagination">
+  <p>Você escolheu Paginação.</p>
+</div>
+<% } else if (dataViewMode === 'infinite-scroll') { %>
+<div class="infinite-scroll">
+  <!-- Código para a exibição com scroll infinito -->
+  <p>Você escolheu Scroll Infinito.</p>
+  <!-- Adicione seu código de scroll infinito aqui -->
+</div>
+<% } else { %>
+<p>Tipo de exibição desconhecido.</p>
+<% } %>

@@ -6,13 +6,20 @@ import {
   SchematicsException,
   Tree,
 } from '@angular-devkit/schematics';
+import { buildComponent } from '@angular/cdk/schematics';
+
 import {
   getAllProjectDependencies,
   getMissingRequiredDependencies,
   REQUIRED_DEPENDENCIES,
 } from './dependency-helper';
-import { getPrefixFromAngularJson } from './utils';
+import {
+  getPrefixFromAngularJson,
+  getTreeState,
+  hasTreeChanges,
+} from './utils';
 import { SchemaBase } from '../interfaces/Schema';
+import { LOG_PHASES } from '../constants';
 
 const semver = require('semver');
 
@@ -49,12 +56,22 @@ export function createTemplateRule(options: SchemaBase): Rule {
   }
 
   return (tree: Tree, context: SchematicContext) => {
+    const originalState = getTreeState(tree);
     options.teamAcronym = getPrefixFromAngularJson(tree);
 
-    return chain([(_tree: Tree, _context: SchematicContext) => {}])(
-      tree,
-      context
-    );
+    context.logger.info(LOG_PHASES.start);
+    return chain([
+      buildComponent({ ...options, skipImport: true }),
+      (tree: Tree, context: SchematicContext) => {
+        const currentTreeState = getTreeState(tree);
+
+        if (hasTreeChanges(originalState, currentTreeState)) {
+          context.logger.info(LOG_PHASES.updating);
+        } else {
+          context.logger.info(LOG_PHASES.noChanges);
+        }
+      },
+    ])(tree, context);
   };
 }
 
