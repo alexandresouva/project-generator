@@ -7,6 +7,9 @@ import parserTypescript from '@typescript-eslint/parser';
 export default [
   pluginJs.configs.recommended,
   {
+    ignores: ['dist/'],
+  },
+  {
     files: ['**/*.ts', '**/*.tsx'],
   },
   {

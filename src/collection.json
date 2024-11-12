@@ -1,9 +1,10 @@
 {
   "$schema": "../node_modules/@angular-devkit/schematics/collection-schema.json",
   "schematics": {
-    "project-generator": {
-      "description": "A blank schematic.",
-      "factory": "./project-generator/index#projectGenerator"
+    "example": {
+      "description": "A schema example.",
+      "factory": "../dist/templates/example/index#example",
+      "schema": "./templates/example/schema.json"
     }
   }
 }

@@ -1,3 +1,5 @@
+# Build
+dist/
 
 # Outputs
 src/**/*.js
