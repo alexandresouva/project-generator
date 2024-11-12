@@ -13,13 +13,13 @@
     },
     "name": {
       "type": "string",
-      "description": "O nome da propriedade 'name' não deve ser alterado ou removido no JSON por questões de compatibilidade com a lib do Angular CDK. É preciso que tenha valor atribuído, mesmo que não usado.",
-      "$default": {
-        "$source": "argv",
-        "index": 0
-      }
+      "description": "Não deve ser alterado ou removido no JSON por questões de compatibilidade com a lib do Angular CDK. Inicia com um valor default e não deve ser reatribuído ou utilizado.",
+      "default": "name"
     },
-
+    "teamAcronym": {
+      "type": "string",
+      "description": "Defina a sigla da equipe. Ex: GAW"
+    },
     "inlineStyle": {
       "description": "Specifies if the style will be in the ts file.",
       "type": "boolean",

@@ -1,13 +1,13 @@
 import { Schema } from '@schematics/angular/component/schema';
 
 /**
- * Propriedades do schema que representam as variações no template.
+ * Propriedades que representam as variações do template. É utilizado para definir qual customização será gerada.
  */
-export interface SchemaProps {
-  pagePreference: 'pagination' | 'infinite-scroll';
+export interface TemplateOptions {
+  dataViewMode: 'pagination' | 'infinite-scroll';
 }
 
 /**
- * Junção de propriedades nativa do schema (Angular CDK) e propriedades personalizadas do template.
+ * Junção de propriedades nativas do schema (Angular CDK) e propriedades personalizadas do template. Será o modelo final do schema.
  */
-export interface SchemaModel extends Schema, SchemaProps {}
+export interface TemplateSchema extends Schema, TemplateOptions {}
