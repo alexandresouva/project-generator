@@ -5,7 +5,6 @@ import { execSync } from 'child_process';
  */
 export const REQUIRED_DEPENDENCIES = {
   rxjs: '^8.0.0',
-  'dls-angular': '^1.0.0',
 };
 
 /**

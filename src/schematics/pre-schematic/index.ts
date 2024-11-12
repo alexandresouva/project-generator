@@ -5,13 +5,13 @@ export function preSchematic(schematic: Rule): Rule {
   return (tree: Tree, context: SchematicContext) => {
     if (hasLocalGitChanges()) {
       const orientations: string[] = [
-        'Por favor, faca o commit ou guarde as alterações antes de executar este comando. Sugestões:',
+        'Por favor, faça o commit ou guarde as alterações antes de executar este comando. Sugestões:',
         '\n\n  \x1b[32mgit stash\x1b[0m --> guardar alterações em staging.',
         '\n  \x1b[32mgit add && git commit\x1b[0m --> faz o commit das mudanças.',
-        '\n\nEm seguida, tente gerar o template novamente.',
+        '\n\nEm seguida, tente gerar o template novamente. \n',
       ];
 
-      console.error('\nExistem arquivos modificados ou em staging.\n');
+      console.error('Existem arquivos modificados ou em staging.\n');
       console.info(orientations.join(''));
       return noop();
     }

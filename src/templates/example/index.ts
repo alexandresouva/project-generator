@@ -38,12 +38,14 @@ export function example(_options: TemplateSchema): Rule {
           {
             name: 'Paginação',
             value: 'pagination',
-            description: 'Exemplo: https://paginacao',
+            description:
+              'Veja a demonstração em: https://bb.linkficticio.com/paginacao',
           },
           {
             name: 'Scroll Infinito',
             value: 'infinite-scroll',
-            description: 'Exemplo: https://paginacao',
+            description:
+              'Veja a demonstração em: https://bb.linkficticio.com/scroll-infinito',
           },
         ],
       });
