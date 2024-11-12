@@ -9,9 +9,12 @@ import {
 import {
   getAllProjectDependencies,
   getMissingRequiredDependencies,
+  REQUIRED_DEPENDENCIES,
 } from './dependency-helper';
 import { getPrefixFromAngularJson } from './utils';
 import { SchemaBase } from '../interfaces/Schema';
+
+const semver = require('semver');
 
 export function createTemplateRule(options: SchemaBase): Rule {
   const dependencies = getAllProjectDependencies();
@@ -21,7 +24,7 @@ export function createTemplateRule(options: SchemaBase): Rule {
     );
   }
 
-  // Interrompe a geração caso falte alguma dependência obrigatória
+  // Interrompe o schematic caso falte alguma dependência obrigatória
   const missingDependencies = getMissingRequiredDependencies(dependencies);
   if (missingDependencies.length > 0) {
     const { errorMsg, infoMsg } =
@@ -29,6 +32,20 @@ export function createTemplateRule(options: SchemaBase): Rule {
     console.error(errorMsg);
     console.info(infoMsg);
     return noop();
+  }
+
+  // Interrompe o schematic caso alguma dependência obrigatória
+  // esteja em uma versão incompatível
+  for (const [name, expectedVersion] of Object.entries(REQUIRED_DEPENDENCIES)) {
+    const currentVersion = dependencies[name];
+    const isValidVersion = semver.satisfies(currentVersion, expectedVersion);
+
+    if (!isValidVersion) {
+      console.error('\nDependência desatualizada!\n');
+      console.info(
+        `A versão da dependência ${name} instalada (${currentVersion}) não satisfaz a versão esperada para o template (${expectedVersion}). Por favor, instale uma versão compatível.\n`
+      );
+    }
   }
 
   return (tree: Tree, context: SchematicContext) => {

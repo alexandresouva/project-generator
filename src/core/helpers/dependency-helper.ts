@@ -4,7 +4,7 @@ import { execSync } from 'child_process';
  * Dependências necessárias para a inicialização de um projeto
  */
 export const REQUIRED_DEPENDENCIES = {
-  rxjs: '^8.0.0',
+  rxjs: '^7.0.0',
 };
 
 /**

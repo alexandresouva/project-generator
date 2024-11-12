@@ -25,10 +25,12 @@
     "@angular-devkit/schematics": "^18.2.11",
     "@angular/cdk": "^18.2.12",
     "@inquirer/confirm": "^5.0.2",
+    "@inquirer/prompts": "^7.1.0",
     "@inquirer/select": "^4.0.2",
     "@schematics/angular": "^18.2.11",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
+    "semver": "^7.6.3",
     "typescript": "~5.5.2"
   },
   "devDependencies": {
