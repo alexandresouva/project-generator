@@ -25,7 +25,6 @@ export default [
       '@typescript-eslint': pluginTypescript,
     },
     rules: {
-      'no-console': 'warn',
       eqeqeq: ['error', 'always'],
       semi: ['error', 'always'],
       quotes: ['error', 'single'],
