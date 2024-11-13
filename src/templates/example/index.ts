@@ -5,6 +5,7 @@ import { createTemplateRule } from '../../core/helpers/template-generator';
 import { handlePromptTemplate } from '../../core/helpers/prompt-helper';
 import { select } from '@inquirer/prompts';
 import {
+  ROUTES,
   TEMPLATE_CONDITIONAL_IMPORTS,
   TEMPLATE_REQUIRED_IMPORTS,
 } from './schema-data';
@@ -64,6 +65,6 @@ export function example(_options: TemplateSchema): Rule {
       TEMPLATE_CONDITIONAL_IMPORTS
     );
 
-    return createTemplateRule(_options, imports);
+    return createTemplateRule(_options, imports, ROUTES);
   };
 }

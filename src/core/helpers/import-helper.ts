@@ -54,7 +54,7 @@ export function addImportsToAppModule(appModuleImports: DefaultImport[]): Rule {
     // Obtém o SourceFile (representação do arquivo) do app.module.ts
     const sourceFile = getSourceFile(targetAppModulePath, tree);
 
-    // Obtem os imports que faltam no app.module.ts
+    // Obtém os imports que faltam no app.module.ts
     const missingImports = getMissingImports(
       sourceFile,
       targetAppModulePath,

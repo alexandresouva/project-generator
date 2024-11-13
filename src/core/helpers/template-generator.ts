@@ -6,7 +6,6 @@ import {
   SchematicsException,
   Tree,
 } from '@angular-devkit/schematics';
-import { buildComponent } from '@angular/cdk/schematics';
 
 import {
   getAllProjectDependencies,
@@ -20,14 +19,15 @@ import {
 } from './utils';
 import { SchemaBase } from '../interfaces/Schema';
 import { LOG_PHASES } from '../constants';
-import { addImportsToAppModule } from './import-helper';
-import { DefaultImport } from '../interfaces/Import';
+import { DefaultImport, IRouteImport } from '../interfaces/Import';
+import { addRoutesToRoutingModule } from './teste-helper';
 
 const semver = require('semver');
 
 export function createTemplateRule(
   options: SchemaBase,
-  imports: DefaultImport[]
+  _imports: DefaultImport[],
+  routes: IRouteImport[]
 ): Rule {
   const dependencies = getAllProjectDependencies();
   if (!dependencies) {
@@ -66,8 +66,9 @@ export function createTemplateRule(
 
     context.logger.info(LOG_PHASES.start);
     return chain([
-      buildComponent({ ...options, skipImport: true }),
-      addImportsToAppModule(imports),
+      // buildComponent({ ...options, skipImport: true }),
+      // addImportsToAppModule(imports),
+      () => addRoutesToRoutingModule(routes, true),
       (tree: Tree, context: SchematicContext) => {
         const currentTreeState = getTreeState(tree);
 
