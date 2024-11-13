@@ -21,7 +21,7 @@ export const TEMPLATE_CONDITIONAL_IMPORTS: Record<string, DefaultImport[]> = {
       path: './components/my-component.component',
     },
     {
-      name: 'MyComponent2',
+      name: 'My2Component',
       path: './components/my-component2.component',
     },
   ],

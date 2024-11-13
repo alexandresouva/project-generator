@@ -58,12 +58,12 @@ export function example(_options: TemplateSchema): Rule {
       ...userPreferences,
     };
 
-    getAllImportsBasedOnCustomization(
+    const imports = getAllImportsBasedOnCustomization(
       userPreferences ?? defaultTemplatePreferences,
       TEMPLATE_REQUIRED_IMPORTS,
       TEMPLATE_CONDITIONAL_IMPORTS
     );
 
-    return createTemplateRule(_options);
+    return createTemplateRule(_options, imports);
   };
 }

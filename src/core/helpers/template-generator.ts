@@ -20,10 +20,15 @@ import {
 } from './utils';
 import { SchemaBase } from '../interfaces/Schema';
 import { LOG_PHASES } from '../constants';
+import { addImportsToAppModule } from './import-helper';
+import { DefaultImport } from '../interfaces/Import';
 
 const semver = require('semver');
 
-export function createTemplateRule(options: SchemaBase): Rule {
+export function createTemplateRule(
+  options: SchemaBase,
+  imports: DefaultImport[]
+): Rule {
   const dependencies = getAllProjectDependencies();
   if (!dependencies) {
     throw new SchematicsException(
@@ -62,6 +67,7 @@ export function createTemplateRule(options: SchemaBase): Rule {
     context.logger.info(LOG_PHASES.start);
     return chain([
       buildComponent({ ...options, skipImport: true }),
+      addImportsToAppModule(imports),
       (tree: Tree, context: SchematicContext) => {
         const currentTreeState = getTreeState(tree);
 
