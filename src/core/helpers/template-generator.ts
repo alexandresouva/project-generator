@@ -58,8 +58,9 @@ export function createTemplateRule(
     if (!isValidVersion) {
       console.error('\nDependência desatualizada!\n');
       console.info(
-        `A versão da dependência ${name} instalada (${currentVersion}) não satisfaz a versão esperada para o template (${expectedVersion}). Por favor, instale uma versão compatível.\n`
+        `A versão instalada da dependência "${name}" (${currentVersion}) não satisfaz a versão mínima esperada para o template (${expectedVersion}). \nPor favor, atualize para uma versão compatível.\n`
       );
+      return noop();
     }
   }
 
@@ -103,12 +104,12 @@ function generateDependenciesErrorMessage(missingDependencies: string[]): {
     errorMsg = `${errorMsg} a dependência: ${missingDependencies[0]}.`;
   } else {
     const lastDependency = missingDependencies.pop();
-    errorMsg = `${errorMsg} as dependências ${missingDependencies.join(
+    errorMsg = `${errorMsg} as dependências: ${missingDependencies.join(
       ', '
     )} e ${lastDependency}.`;
   }
 
-  const infoMsg = `\nSem ela(s), não é possível garantir a correta estilização e funcionamento do template gerado. Para resolver o problema, você pode: \n\n 1) Gerar o projeto utilizando o gaw-cli (https://example.com.br). \n 2) Atualizar o projeto atual executando o seguinte comando:\n\nnpm install ${missingDependencies.join(
+  const infoMsg = `\nSem ela(s), não é possível garantir a correta estilização e funcionamento do template gerado. \nPara resolver o problema, você pode: \n\n 1) Gerar o projeto utilizando o gaw-cli (https://example.com.br). \n 2) Atualizar o projeto atual executando o seguinte comando:\n\nnpm install ${missingDependencies.join(
     ' '
   )}\n\nEm seguida, tente novamente.\n`;
 
