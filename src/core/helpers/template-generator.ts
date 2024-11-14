@@ -6,6 +6,7 @@ import {
   SchematicsException,
   Tree,
 } from '@angular-devkit/schematics';
+import { buildComponent } from '@angular/cdk/schematics';
 
 import {
   getAllProjectDependencies,
@@ -19,15 +20,16 @@ import {
 } from './utils';
 import { SchemaBase } from '../interfaces/Schema';
 import { LOG_PHASES } from '../constants';
-import { DefaultImport, IRouteImport } from '../interfaces/Import';
-import { addRoutesToRoutingModule } from './teste-helper';
+import { DefaultImport, RouteImport } from '../interfaces/Import';
+import { addRoutesToRoutingModule } from './route-helper';
+import { addImportsToAppModule } from './import-helper';
 
 const semver = require('semver');
 
 export function createTemplateRule(
   options: SchemaBase,
-  _imports: DefaultImport[],
-  routes: IRouteImport[]
+  imports: DefaultImport[],
+  routes: RouteImport[]
 ): Rule {
   const dependencies = getAllProjectDependencies();
   if (!dependencies) {
@@ -64,13 +66,13 @@ export function createTemplateRule(
     const originalState = getTreeState(tree);
     options.teamAcronym = getPrefixFromAngularJson(tree);
 
-    context.logger.info(LOG_PHASES.start);
     return chain([
-      // buildComponent({ ...options, skipImport: true }),
-      // addImportsToAppModule(imports),
-      () => addRoutesToRoutingModule(routes, true),
+      buildComponent({ ...options, skipImport: true }),
+      addImportsToAppModule(imports),
+      () => addRoutesToRoutingModule(routes),
       (tree: Tree, context: SchematicContext) => {
         const currentTreeState = getTreeState(tree);
+        context.logger.info(LOG_PHASES.start);
 
         if (hasTreeChanges(originalState, currentTreeState)) {
           context.logger.info(LOG_PHASES.updating);

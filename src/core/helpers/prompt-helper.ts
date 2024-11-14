@@ -1,21 +1,21 @@
 import { confirm } from '@inquirer/prompts';
 
-export async function handlePromptTemplate<T>(
+/**
+ * Função para lidar com a personalização do template.
+ *
+ * @param {() => Promise<T>} customPrompts - Callback que será executada para obter as preferências do usuário.
+ * @returns {Promise<T | undefined>} - Preferências do usuário ou undefined, se não for personalizado.
+ */
+export async function promptForTemplateCustomization<T>(
   customPrompts?: () => Promise<T>
 ): Promise<T | undefined> {
-  let answers: T | undefined;
+  if (!customPrompts) return undefined;
+
   const shouldCustomizeTemplate = await confirm({
     message: 'Deseja personalizar o template?',
   });
 
-  if (customPrompts && shouldCustomizeTemplate) {
-    answers = await customPrompts();
+  if (shouldCustomizeTemplate) {
+    return customPrompts();
   }
-
-  await confirm({
-    message:
-      'Deseja substituir a rota principal? Com isso, o template será exibido assim que for gerado.',
-  });
-
-  return answers;
 }

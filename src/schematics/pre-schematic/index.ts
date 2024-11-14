@@ -1,6 +1,13 @@
 import { noop, Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
 import { execSync } from 'child_process';
 
+/**
+ * Função de wrapper para controlar o fluxo antes do schematic principal (template) ser executado.
+ *
+ * @param {Rule} schematic - A regra do template que será executada.
+ *
+ * @returns {Rule} A regra modificada, que pode ser a execução do schematic original ou uma operação de `noop()` se houver alterações locais.
+ */
 export function preSchematic(schematic: Rule): Rule {
   return (tree: Tree, context: SchematicContext) => {
     if (hasLocalGitChanges()) {

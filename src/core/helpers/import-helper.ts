@@ -19,6 +19,15 @@ import {
  */
 const REQUIRED_IMPORTS: DefaultImport[] = [];
 
+/**
+ * Retorna todos os imports necessários com base na personalização fornecida.
+ *
+ * @param {Object} props - As propriedades ou preferências fornecidas para a personalização.
+ * @param {DefaultImport[]} templateImports - Lista de imports padrões para o template.
+ * @param {Record<string, DefaultImport[]>} conditionalImports - Mapa de imports condicionais baseados em valores das propriedades.
+ *
+ * @returns {DefaultImport[]} Lista de todos os imports necessários após combinar os obrigatórios, os do template e os condicionais.
+ */
 export function getAllImportsBasedOnCustomization(
   props: Object,
   templateImports: DefaultImport[],

@@ -1,157 +1,122 @@
-import {
-  Rule,
-  Tree,
-  SchematicContext,
-  SchematicsException,
-} from '@angular-devkit/schematics';
+import { Rule, SchematicsException, Tree } from '@angular-devkit/schematics';
 import { addRouteDeclarationToModule } from '@angular/cdk/schematics';
-import { Change, InsertChange } from '@schematics/angular/utility/change';
-import { DefaultImport, IRouteImport } from '../interfaces/Import';
-import { findImportInsertionIndex, getSourceFile } from './utils';
-import ts = require('typescript');
+import { InsertChange } from '@schematics/angular/utility/change';
 
-/**
- * Adiciona rotas e importações ao módulo de roteamento.
- *
- * @param routesToBeAdded - Array de rotas a serem adicionadas. Cada rota deve conter o caminho e o componente associado.
- * @returns Uma regra do schematic que adiciona as rotas e importações ao módulo de roteamento.
- */
-export function addRoutesToRoutingModule(
-  routesToBeAdded: IRouteImport[]
-): Rule {
-  return (tree: Tree, _context: SchematicContext) => {
+import * as ts from 'typescript';
+import { getSourceFile } from './utils';
+import { RouteImport } from '../interfaces/Import';
+
+interface Route {
+  path?: string;
+  component?: string;
+  loadChildren?: string;
+  matcher?: string;
+  redirectTo?: string;
+  pathMatch?: string;
+}
+
+export function addRoutesToRoutingModule(routes: RouteImport[]): Rule {
+  return (tree: Tree) => {
     const routingModulePath = 'src/app/app-routing.module.ts';
+    const routingSource = getSourceFile(routingModulePath, tree);
+    const routingFileContent = tree.read(routingModulePath)?.toString('utf-8');
 
-    if (!tree.exists(routingModulePath)) {
+    if (!routingFileContent) {
       throw new SchematicsException(
-        `Não foi possível adicionar as rotas no projeto. O arquivo "${routingModulePath}" não foi encontrado.`
+        `Não foi possível ler o arquivo ${routingModulePath}`
       );
     }
 
-    const sourceFile = getSourceFile(routingModulePath, tree);
-    const appRoutingText = sourceFile.getFullText();
-
-    // Encontra a posição de início e fim do array de rotas
-    const routesArrayStart =
-      appRoutingText.indexOf('const routes: Routes = [') +
-      'const routes: Routes = ['.length;
-    const routesArrayEnd = appRoutingText.indexOf(']', routesArrayStart);
-
-    // Extrai as rotas existentes
-    const existingRoutes = appRoutingText
-      .substring(routesArrayStart, routesArrayEnd)
-      .split(',')
-      .map((route) => route.trim())
-      .filter((route) => route.length > 0);
-
-    const isExistingRoutesEmpty = existingRoutes.length === 0;
-
-    // Cria um recorder para aplicar as mudanças no arquivo
-    const recorder = tree.beginUpdate(routingModulePath);
-
-    // Adiciona as rotas ao início do array de roteamento
-    routesToBeAdded.forEach(({ path, component }, index) => {
-      const isRouteAlreadyPresent = existingRoutes.some(
-        (route, i) =>
-          route.includes(`path: '${path}'`) &&
-          existingRoutes[i + 1] &&
-          existingRoutes[i + 1].includes(`component: ${component}`)
-      );
-      const isLastRoute = index === routesToBeAdded.length - 1;
-
-      // Ignora a rota se já estiver presente
-      if (isRouteAlreadyPresent) {
-        return;
-      }
-
-      // Cria a string de rota a ser adicionada
-      const route = `{ path: '${path}', component: ${component} }`;
-      if (isExistingRoutesEmpty) {
-        // Se o array estiver vazio, é necessário tratar a rota antes de adicioná-la
-        const routeChange = addRouteDeclarationToModule(
-          sourceFile,
-          routingModulePath,
-          `\n ${route}${isLastRoute ? ' \n' : ','}`
-        );
-        if (routeChange instanceof InsertChange) {
-          recorder.insertLeft(routeChange.pos, routeChange.toAdd);
-        }
-      } else {
-        const routeChange = addRouteDeclarationToModule(
-          sourceFile,
-          routingModulePath,
-          route
-        );
-        if (routeChange instanceof InsertChange) {
-          recorder.insertLeft(routesArrayStart, routeChange.toAdd);
-        }
-      }
-    });
-
-    // Filtra e remove as rotas duplicadas
-    const importsToAdd = routesToBeAdded
-      .map((route) => ({
-        name: route.component,
-        path: route.importPath,
-      }))
-      .filter(
-        (value, index, self) =>
-          index ===
-          self.findIndex((t) => t.name === value.name && t.name === value.path)
-      );
-
-    // Prepara os imports e as mudanças a serem adicionadas
-    const importChanges = getImportChanges(
-      sourceFile,
-      routingModulePath,
-      importsToAdd
+    const existingRoutes = getExistingRoutes(routingSource);
+    const newRotes = routes.filter(
+      (route) =>
+        !existingRoutes.some(
+          (existingRoute) => existingRoute.path === route.path
+        )
     );
 
-    // Aplica as mudanças
-    importChanges.forEach((change) => {
+    // Adiciona as novas rotas no array de rotas
+    const recorder = tree.beginUpdate(routingModulePath);
+    newRotes.forEach((route) => {
+      const routeDeclaration = `{ path: '${route.path}', component: ${route.component} }`;
+      const change = addRouteDeclarationToModule(
+        routingSource,
+        routingModulePath,
+        routeDeclaration
+      );
+
       if (change instanceof InsertChange) {
         recorder.insertLeft(change.pos, change.toAdd);
       }
     });
+
+    // Adiciona as importações necessárias no topo do arquivo
+    newRotes.forEach((route) => {
+      const importStatement = `import { ${route.component} } from '${route.importPath}';\n`;
+
+      if (!routingFileContent.includes(importStatement)) {
+        recorder.insertLeft(0, importStatement);
+      }
+    });
+
     tree.commitUpdate(recorder);
     return tree;
   };
 }
 
-/**
- * Obtém as mudanças necessárias para adicionar importações ao arquivo de roteamento.
- *
- * @param sourceFile - O SourceFile do app-routing.module.ts do projeto.
- * @param modulePath - Caminho para o app-routing.module.ts.
- * @param importsToProcess - Lista de importações a serem adicionadas. Cada importação deve conter o nome classificado e o caminho do módulo.
- *
- * @returns Um array de mudanças necessárias para adicionar as importações ao arquivo de roteamento.
- */
-function getImportChanges(
-  sourceFile: ts.SourceFile,
-  modulePath: string,
-  importsToProcess: DefaultImport[]
-): Change[] {
-  const changes: Change[] = [];
+function getExistingRoutes(node: ts.Node): Route[] {
+  const routes: Route[] = [];
 
-  importsToProcess.forEach(({ name, path }) => {
-    // Cria a string de importação
-    const importStatement = `import { ${name} } from '${path}';\n`;
+  if (isRouteArray(node)) {
+    const routeArray = (node as ts.VariableDeclaration)
+      .initializer as ts.ArrayLiteralExpression;
+    routeArray.elements.forEach((element) => {
+      if (ts.isObjectLiteralExpression(element)) {
+        const route = processRouteObject(element);
+        routes.push(route);
+      }
+    });
+  }
 
-    // Verifica se a importação já existe no arquivo
-    const existingImport = sourceFile.statements.find(
-      (statement) =>
-        ts.isImportDeclaration(statement) &&
-        statement.getText().includes(`from '${path}'`)
-    );
+  // Acumula rotas encontradas recursivamente nos filhos
+  node.forEachChild((childNode) => {
+    routes.push(...getExistingRoutes(childNode));
+  });
 
-    if (!existingImport) {
-      // Encontra a posição de inserção do import statement
-      const importIndex = findImportInsertionIndex(sourceFile);
-      // Adiciona a importação
-      changes.push(new InsertChange(modulePath, importIndex, importStatement));
+  return routes;
+}
+
+function isRouteArray(node: ts.Node): boolean {
+  return (
+    (ts.isVariableDeclaration(node) &&
+      node.name.getText() === 'routes' &&
+      node.initializer &&
+      ts.isArrayLiteralExpression(node.initializer)) ??
+    false
+  );
+}
+
+function processRouteObject(node: ts.ObjectLiteralExpression): Route {
+  const route: Route = {};
+  const routeMapping: { [key: string]: keyof Route } = {
+    path: 'path',
+    component: 'component',
+    loadChildren: 'loadChildren',
+    matcher: 'matcher',
+    redirectTo: 'redirectTo',
+    pathMatch: 'pathMatch',
+  };
+
+  node.properties.forEach((property) => {
+    if (ts.isPropertyAssignment(property)) {
+      const name = property.name.getText();
+      const value = property.initializer.getText().replace(/['"]/g, '');
+
+      if (routeMapping[name]) {
+        route[routeMapping[name]] = value;
+      }
     }
   });
 
-  return changes;
+  return route;
 }

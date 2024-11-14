@@ -4,7 +4,7 @@ export interface DefaultImport {
   isModuleForRoot?: boolean;
 }
 
-export interface IRouteImport {
+export interface RouteImport {
   path: string;
   component: string;
   importPath: string;

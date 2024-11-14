@@ -1,4 +1,4 @@
-import { DefaultImport, IRouteImport } from '../../core/interfaces/Import';
+import { DefaultImport, RouteImport } from '../../core/interfaces/Import';
 
 /**
  * Imports necessários para este template, independente da variação escolhida.
@@ -37,7 +37,7 @@ export const TEMPLATE_CONDITIONAL_IMPORTS: Record<string, DefaultImport[]> = {
 /**
  * Rotas a serem adicionadas no app-routing.module
  */
-export const ROUTES: IRouteImport[] = [
+export const ROUTES: RouteImport[] = [
   {
     path: '',
     component: 'HomeComponent',
