@@ -4,7 +4,12 @@
     "preSchematic": {
       "private": true,
       "description": "Executa um comando npm dentro do projeto de destino.",
-      "factory": "../dist/schematics/npmRun"
+      "factory": "../dist/schematics/pre-schematic/#preSchematic"
+    },
+    "posSchematic": {
+      "private": true,
+      "description": "Executa um comando npm dentro do projeto de destino.",
+      "factory": "../dist/schematics/pos-schematic/#posSchematic"
     },
     "example": {
       "description": "A schema example.",

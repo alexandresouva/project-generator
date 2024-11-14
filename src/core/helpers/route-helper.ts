@@ -5,6 +5,7 @@ import { InsertChange } from '@schematics/angular/utility/change';
 import * as ts from 'typescript';
 import { getSourceFile } from './utils';
 import { RouteImport } from '../interfaces/Import';
+import { APP_ROUTING_MODULE_PATH } from '../constants';
 
 interface Route {
   path?: string;
@@ -17,13 +18,14 @@ interface Route {
 
 export function addRoutesToRoutingModule(routes: RouteImport[]): Rule {
   return (tree: Tree) => {
-    const routingModulePath = 'src/app/app-routing.module.ts';
-    const routingSource = getSourceFile(routingModulePath, tree);
-    const routingFileContent = tree.read(routingModulePath)?.toString('utf-8');
+    const routingSource = getSourceFile(APP_ROUTING_MODULE_PATH, tree);
+    const routingFileContent = tree
+      .read(APP_ROUTING_MODULE_PATH)
+      ?.toString('utf-8');
 
     if (!routingFileContent) {
       throw new SchematicsException(
-        `Não foi possível ler o arquivo ${routingModulePath}`
+        `Não foi possível ler o arquivo ${APP_ROUTING_MODULE_PATH}`
       );
     }
 
@@ -36,12 +38,12 @@ export function addRoutesToRoutingModule(routes: RouteImport[]): Rule {
     );
 
     // Adiciona as novas rotas no array de rotas
-    const recorder = tree.beginUpdate(routingModulePath);
+    const recorder = tree.beginUpdate(APP_ROUTING_MODULE_PATH);
     newRotes.forEach((route) => {
       const routeDeclaration = `{ path: '${route.path}', component: ${route.component} }`;
       const change = addRouteDeclarationToModule(
         routingSource,
-        routingModulePath,
+        APP_ROUTING_MODULE_PATH,
         routeDeclaration
       );
 
@@ -64,7 +66,7 @@ export function addRoutesToRoutingModule(routes: RouteImport[]): Rule {
   };
 }
 
-function getExistingRoutes(node: ts.Node): Route[] {
+export function getExistingRoutes(node: ts.Node): Route[] {
   const routes: Route[] = [];
 
   if (isRouteArray(node)) {

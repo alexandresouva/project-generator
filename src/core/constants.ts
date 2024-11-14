@@ -8,6 +8,8 @@ export const LOG_PHASES = {
   `,
   updating: '⏳ Gerando arquivos e atualizando o projeto... \n',
   linting: '\n🛠️  Corrigindo problemas de formatação...',
-  success: '✅ Projeto atualizado com sucesso! \n',
+  updated: '\n✅ Projeto atualizado com sucesso! \n',
   noChanges: 'Nenhuma mudança foi detectada. O seu projeto está atualizado!',
 };
+
+export const APP_ROUTING_MODULE_PATH = 'src/app/app-routing.module.ts';

@@ -7,6 +7,7 @@ import {
   Tree,
 } from '@angular-devkit/schematics';
 import { buildComponent } from '@angular/cdk/schematics';
+import { RunSchematicTask } from '@angular-devkit/schematics/tasks';
 
 import {
   getAllProjectDependencies,
@@ -76,6 +77,9 @@ export function createTemplateRule(
 
         if (hasTreeChanges(originalState, currentTreeState)) {
           context.logger.info(LOG_PHASES.updating);
+
+          // Após a geração dos arquivos, inicia a etapa de pós schematic
+          context.addTask(new RunSchematicTask('posSchematic', { routes }));
         } else {
           context.logger.info(LOG_PHASES.noChanges);
         }
