@@ -30,6 +30,28 @@ function copyFiles(src, dest) {
   });
 }
 
+/**
+ * Função para apagar um diretório e seu conteúdo recursivamente.
+ *
+ * @param {string} dirPath - O caminho do diretório a ser apagado.
+ */
+function deleteDirectory(dirPath) {
+  if (fs.existsSync(dirPath)) {
+    const files = fs.readdirSync(dirPath);
+    files.forEach((file) => {
+      const currentPath = path.join(dirPath, file);
+      const stat = fs.statSync(currentPath);
+
+      if (stat.isDirectory()) {
+        deleteDirectory(currentPath); // Recursão para diretórios
+      } else {
+        fs.unlinkSync(currentPath); // Remover arquivo
+      }
+    });
+    fs.rmdirSync(dirPath); // Remover o diretório vazio
+  }
+}
+
 fs.readdir(templatesDir, (err, files) => {
   if (err) {
     console.error(`Erro ao ler o diretório de templates: ${err}`);
@@ -48,6 +70,12 @@ fs.readdir(templatesDir, (err, files) => {
       return;
     }
 
+    // Apagar a pasta 'files' no diretório de destino, se existir
+    if (fs.existsSync(outputFilesDir)) {
+      deleteDirectory(outputFilesDir);
+    }
+
+    // Copiar os arquivos para o diretório de destino
     copyFiles(filesPath, outputFilesDir);
   });
 });
